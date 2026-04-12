@@ -1,0 +1,149 @@
+# 总体方案蓝图
+
+返回：[AI / Agent 文档总览](/Users/zhouzhixiong/code/zuozhanV2/docs/ai-agent-solution/README.md)
+
+## 1. 定位
+
+本文件描述任务分配与自动检核系统的 AI / Agent 整体蓝图，用于统一业务目标、架构边界和中长期方向。
+
+如果团队进入真实版本排期，实施优先级请以 [基于现状的 V2 落地实施方案](/Users/zhouzhixiong/code/zuozhanV2/docs/ai-agent-solution/02-v2-implementation-plan.md) 为准。
+
+## 2. 项目目标
+
+系统目标是支持管理岗创建计划、圈选商家、配置指标组合、分配任务给执行岗，并由系统基于实时和离线数据自动检核任务是否完成。
+
+AI / Agent 引入目标：
+
+1. 提升计划完成率与商家达标率
+2. 提升执行岗效率
+3. 提升自动检核的解释性与可信度
+4. 降低异常排查和复盘成本
+
+## 3. 业务流程与 AI 切入点
+
+核心业务流程：
+
+1. 管理岗创建计划
+2. 圈选目标商家
+3. 配置指标组合
+4. 系统生成并分配任务
+5. 执行岗跟进商家
+6. 系统自动检核任务达成情况
+7. 异常处理和复盘分析
+
+对应 AI / Agent 切入点：
+
+1. 计划创建 Copilot
+2. 商家推荐 Agent
+3. 指标配置 Copilot
+4. 执行待办推荐 Agent
+5. 检核解释 Agent
+6. 异常归因 Agent
+7. 复盘分析 Agent
+
+## 4. 数据方案蓝图
+
+数据源包括：
+
+1. 外部商家系统
+2. Hive / 数仓离线指标
+3. 上游接口 / MQ 实时指标
+4. 本系统计划、任务、执行和检核日志
+
+推荐分层：
+
+1. ODS：原始接入
+2. DWD：标准明细
+3. DWS：主题汇总
+4. ADS / Agent Serving Layer：面向业务与 Agent 的服务层
+
+关键治理要求：
+
+1. 商家统一 ID 映射
+2. 指标中心和版本治理
+3. 实时 / 离线一致性监控
+4. 数据质量监控
+5. 检核快照留存
+
+## 5. Agent 分层蓝图
+
+推荐采用多 Agent 协同，而不是单一万能 Agent。
+
+核心角色：
+
+1. 管理侧 Copilot：辅助创建计划、推荐商家和指标、提示风险
+2. 商家推荐 Agent：推荐商家圈选和排序
+3. 执行助手 Agent：生成每日待办、优先级和动作建议
+4. 检核解释 Agent：解释达标和未达标原因
+5. 异常归因 Agent：判断异常源头并给出建议
+6. 复盘分析 Agent：输出报告和优化建议
+7. Orchestrator：负责编排、重试、降级和审计
+
+## 6. 技术架构蓝图
+
+推荐三层架构：
+
+1. 数据接入与治理层
+2. 核心业务与检核层
+3. AI / Agent 能力层
+
+建议服务拆分：
+
+1. `plan-service`
+2. `merchant-service`
+3. `metric-center`
+4. `task-service`
+5. `check-engine`
+6. `event-ingestion-service`
+7. `data-quality-service`
+8. `agent-orchestrator`
+9. `agent-serving`
+10. `report-service`
+
+## 7. 效果评估与风控
+
+业务效果指标：
+
+1. 计划完成率
+2. 商家达标率
+3. 平均达成周期
+4. 执行岗人效
+5. 自动检核覆盖率
+
+Agent 效果指标：
+
+1. 推荐采纳率
+2. 推荐命中率
+3. 风险预警准确率
+4. 解释满意度
+5. 人工干预率
+6. 响应时延和调用成本
+
+风控原则：
+
+1. 规则优先于模型
+2. 数据不可信时不做强结论
+3. 高风险动作必须人工确认
+4. 模型异常必须可降级
+5. 所有关键输出要可追溯
+
+## 8. 中长期路线图
+
+第一阶段：
+夯实指标中心、规则引擎、数据治理和检核解释能力
+
+第二阶段：
+提升执行效率，建设商家画像、待办推荐、自动催办和异常归因
+
+第三阶段：
+形成多 Agent 协同闭环，实现策略持续优化
+
+## 9. 与实施方案的关系
+
+本文件提供的是蓝图和参考基线。
+
+真正实施时，请继续阅读：
+
+1. [基于现状的 V2 落地实施方案](/Users/zhouzhixiong/code/zuozhanV2/docs/ai-agent-solution/02-v2-implementation-plan.md)
+2. [自然语言计划生成的数据准备与存储设计](/Users/zhouzhixiong/code/zuozhanV2/docs/ai-agent-solution/03-nl-plan-data-design.md)
+3. [自然语言计划生成的时序流程设计](/Users/zhouzhixiong/code/zuozhanV2/docs/ai-agent-solution/04-nl-plan-sequence-design.md)
